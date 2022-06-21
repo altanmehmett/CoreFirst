@@ -1,8 +1,100 @@
-﻿@{
+﻿@model List<Question>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        @{ var counter = 0;}
+        @foreach (var item in Model)
+        {
+            counter++;
+            <div class="col-md-12 mt-3">
+                <h5> @counter.  @item.Title   </h5>
+                <div class="row question">
+                    <div class="col-md-12">
+                        <input class="A radio" type="radio" name="@item.Id" value="A" />
+                        <label>@item.A</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="B radio" type="radio" name="@item.Id" value="B" />
+                        <label>@item.B</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="C radio" type="radio" name="@item.Id" value="C" />
+                        <label>@item.C</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="D radio" type="radio" name="@item.Id" value="D" />
+                        <label>@item.D</label>
+                    </div>
+
+                    <div class="col-md-12">
+                        <input class="answer" type="hidden"  value="@item.Answer" />
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+        }
+    </div>
+    <div class="col-12 py-5">
+        <button id="btnShowAnswers" class="btn btn-success mb-5 float-right"> Doğru Cevapları Göster</button>
+    </div>
+    <div>
+        Sonuç:
+        <div id="resultDiv">
+            <div class="container">
+                <p>Doğru Sayısı : </p>
+              
+
+
+
+            </div>
+            <script>$("<p></p>").insertAfter(".correctAnswerCount");</script>
+        </div>
+    </div>
 </div>
+
+
+<script>
+    $("#btnShowAnswers").click(function () {
+        var allAnswered = true;
+        var correctAnswerCount = 0;
+        
+
+
+        $(".question").each(function () {
+            let selectedAnswer = $(this).find(".radio:checked").val();
+            if (selectedAnswer === undefined) {
+                allAnswered = false;
+            }
+        })
+        if (allAnswered==true) {
+            $(".question").each(function () {
+                let correctAnswer = $(this).find(".answer").val();
+                let selectedAnswer = $(this).find(".radio:checked").val();
+             
+                if (correctAnswer === selectedAnswer) {
+                    correctAnswerCount++;
+                    $(this).find(".radio").closest("div").removeClass("bg-success").removeClass("bg-danger");
+                    $(this).find(".radio:checked").closest("div").addClass("bg-success");
+                }
+                else {
+                    $(this).find(".radio").closest("div").removeClass("bg-danger").removeClass("bg-success");
+                    $(this).find(".radio:checked").closest("div").addClass("bg-danger");
+                }
+            })
+
+            //sonuç yazdırma
+            console.log(correctAnswerCount);
+            $("button").click(function () {
+                $("p").append(correctAnswerCount);    
+            });
+        }
+        else {
+            alert("lütfen bütün soruları cevaplayınız");
+        }
+    })
+</script>
